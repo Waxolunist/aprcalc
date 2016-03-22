@@ -33,7 +33,7 @@ repositories {
 
 nexusStaging {
     packageGroup = "me.pietrzak"
-        stagingProfileId = ""
+        stagingProfileId = "4f5a33efadd60"
 }
 
 
