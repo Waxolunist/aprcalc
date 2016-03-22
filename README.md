@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/piotrpietrzak/aprcalc.svg?branch=master)](https://travis-ci.org/piotrpietrzak/aprcalc)
+[![Build Status](https://travis-ci.org/piotrpietrzak/aprcalc.svg?branch=master)](https://travis-ci.org/piotrpietrzak/aprcalc) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.pietrzak.aprcalc/aprcalc/badge.svg)](https://maven-badges.herokuapp.com/maven-central/me.pietrzak.aprcalc/aprcalc)
 # APRcalc 
 Annual percentage rate calculator
 
