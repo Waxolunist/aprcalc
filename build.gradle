@@ -1,16 +1,74 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
+        classpath 'pl.allegro.tech.build:axion-release-plugin:1.2.3'
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+    }
+}
 
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'pl.allegro.tech.build.axion-release'
+apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'io.codearte.nexus-staging'
 
-
-jar {
-    baseName = 'aprcalc'
-    version = '0.0.1-SNAPSHOT'
+scmVersion {
+    tag {
+        prefix = 'release'
+        versionSeparator = '/'
+    }
+    createReleaseCommit = true
+    releaseCommitMessage { version, position -> "Release version: ${version}\n\n[ci skip]" }
 }
+
+project.version = scmVersion.version
+project.group='me.pietrzak.aprcalc'
 
 repositories {
     mavenCentral()
-    jcenter()
+}
+
+nexusStaging {
+    packageGroup = "me.pietrzak"
+        stagingProfileId = ""
+}
+
+
+modifyPom {
+    project {
+        name 'APRcalc'
+        description 'APR calculator'
+        url 'https://github.com/piotrpietrzak/aprcalc'
+        inceptionYear '2016'
+
+        scm {
+            url 'https://github.com/piotrpietrzak/aprcalc'
+            connection 'scm:https://github.com/piotrpietrzak/aprcalc'
+            developerConnection 'scm:git@github.com:piotrpietrzak/aprcalc.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'piotrpietrzak'
+                name 'Piotr Pietrzak'
+                email 'piotr@pietrzak.me'
+                roles {
+                    role 'developer'
+                }
+            }
+        }
+    }
 }
 
 dependencies {
