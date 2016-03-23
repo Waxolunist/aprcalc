@@ -17,8 +17,8 @@ class CoreApiSpec extends Specification {
 	def "should return 0 if we don't charge Client with interests"() {
 		given:
 			Map<LocalDate, BigDecimal> cashFlow = [:]
-			cashFlow[LocalDate.now().plusMonths(1)] = BigDecimal.TEN.negate()
-			cashFlow[LocalDate.now().plusMonths(2)] = BigDecimal.TEN
+			cashFlow[LocalDate.now().plusMonths(1)] = -10.0
+			cashFlow[LocalDate.now().plusMonths(2)] = 10.0
 		when:
 			BigDecimal result = APRCalc.calculate(cashFlow)
 		then:
@@ -28,11 +28,19 @@ class CoreApiSpec extends Specification {
 	def "should fail for not balanced flow"() {
 		given:
 			Map<LocalDate, BigDecimal> cashFlow = [:]
-			cashFlow[LocalDate.now().plusMonths(1)] = BigDecimal.TEN
-			cashFlow[LocalDate.now().plusMonths(2)] = BigDecimal.TEN
+			cashFlow[LocalDate.now().plusMonths(1)] = 10.0
+			cashFlow[LocalDate.now().plusMonths(2)] = 10.0
 		when:
 			APRCalc.calculate(cashFlow)
 		then:
 			thrown(UnsupportedOperationException)
+	}
+
+	def "should throw NPE when you pass null"() {
+		when:
+			APRCalc.calculate(null)
+		then:
+			NullPointerException ex = thrown()
+			ex.getMessage() == "CashFlow should be defined"
 	}
 }

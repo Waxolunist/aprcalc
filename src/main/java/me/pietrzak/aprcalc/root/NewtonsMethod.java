@@ -4,9 +4,10 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static me.pietrzak.aprcalc.Configuration.internalComputationScale;
+
 public class NewtonsMethod {
     private static final int maximumNumberOfIterations = 5000;
-    private static final int internalComputationsScale = 20;
 
     private static final BigDecimal maximumRange = BigDecimal.TEN.pow(322);
     private static final BigDecimal epsilon = BigDecimal.valueOf(1E-10);
@@ -27,7 +28,7 @@ public class NewtonsMethod {
             if (x.compareTo(maximumRange)>0) {
                 return Optional.empty();
             }
-            x = x.subtract(function.apply(x).divide(derivative.apply(x), internalComputationsScale, BigDecimal.ROUND_HALF_UP));
+            x = x.subtract(function.apply(x).divide(derivative.apply(x), internalComputationScale(), BigDecimal.ROUND_HALF_UP));
         } while (errorIsLargerThanExpected(function, x, epsilon));
         return Optional.of(x);
     }
