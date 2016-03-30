@@ -1,5 +1,7 @@
 package me.pietrzak.aprcalc;
 
+import me.pietrzak.aprcalc.exponent.Power;
+import me.pietrzak.aprcalc.root.BisectionMethod;
 import me.pietrzak.aprcalc.root.NewtonsMethod;
 
 import java.math.BigDecimal;
@@ -13,8 +15,6 @@ import static java.util.Map.Entry.comparingByKey;
 
 public class APRCalc {
 
-    private static final int internalComputationsScale = 20;
-
     public static BigDecimal calculate(LinkedHashMap<LocalDate, BigDecimal> cashFlow) {
         if (cashFlow == null) {
             throw new NullPointerException("CashFlow should be defined");
@@ -27,7 +27,7 @@ public class APRCalc {
         return NewtonsMethod.findZero(
                 x -> cashFlowSum(cashFlow, x),
                 x -> cashFlowSumDerivative(cashFlow, x)
-        ).orElseThrow(() -> new UnsupportedOperationException("Can't find APR for cash flow " + cashFlow.toString()))
+        ).orElseGet(() -> BisectionMethod.findZero(x -> cashFlowSum(cashFlow, x)).get())
                 .multiply(BigDecimal.valueOf(100));
     }
 
@@ -41,9 +41,7 @@ public class APRCalc {
 
     private static BigDecimal discountPayment(LocalDate startDate, Map.Entry<LocalDate, BigDecimal> entry, BigDecimal x) {
         return entry.getValue()
-                .multiply(BigDecimal.valueOf(
-                        Math.pow(1.0 + x.doubleValue(), - days(startDate, entry) / 365.0)
-                ));
+                .multiply(Power.apply(x.add(BigDecimal.ONE), yearFraction(startDate, entry)));
     }
 
     private static BigDecimal cashFlowSumDerivative(LinkedHashMap<LocalDate, BigDecimal> cashFlow, BigDecimal x) {
@@ -52,13 +50,17 @@ public class APRCalc {
                 .get().getKey();
         return cashFlow.entrySet().stream().map(
                 entry -> entry.getValue()
-                        .multiply(BigDecimal.valueOf(
-                                Math.pow(1 + x.doubleValue(), -days(startDate, entry) / 365.0 - 1)
-                        ))
-                        .multiply(BigDecimal.valueOf(-days(startDate, entry)).divide(
-                                BigDecimal.valueOf(365.0), internalComputationsScale,
-                                BigDecimal.ROUND_HALF_UP)))
+                        .multiply(
+                                Power.apply(x.add(BigDecimal.ONE), yearFraction(startDate, entry).subtract(BigDecimal.ONE))
+                        )
+                        .multiply(yearFraction(startDate, entry)))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private static BigDecimal yearFraction(LocalDate startDate, Map.Entry<LocalDate, BigDecimal> entry) {
+        return BigDecimal.valueOf(-days(startDate, entry)).divide(
+                BigDecimal.valueOf(365.0), Configuration.internalComputationScale(),
+                BigDecimal.ROUND_HALF_UP);
     }
 
     private static long days(LocalDate startDate, Map.Entry<LocalDate, BigDecimal> entry) {

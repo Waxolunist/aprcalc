@@ -28,7 +28,7 @@ class BasicCalculationsSpec extends Specification {
 		when:
 			BigDecimal result = APRCalc.calculate(cashFlow)
 		then:
-			result.setScale(1, RoundingMode.HALF_UP) == 1915.5
+			rounded(result) == 1915.5
 	}
 
 	def "should return valid APR for £100 for 13 days and £110.40 repayment"() {
@@ -52,7 +52,7 @@ class BasicCalculationsSpec extends Specification {
 		when:
 			BigDecimal result = APRCalc.calculate(cashFlow)
 		then:
-			result.setScale(1, RoundingMode.HALF_UP) == 13781.7
+			rounded(result) == 13781.7
 	}
 
 	@Unroll
@@ -65,13 +65,13 @@ class BasicCalculationsSpec extends Specification {
 		when:
 			BigDecimal calculatedApr = APRCalc.calculate(cashFlow)
 		then:
-			calculatedApr.setScale(1, RoundingMode.HALF_UP) == correctApr.setScale(1, RoundingMode.HALF_UP)
+			rounded(calculatedApr) == rounded(correctApr)
 		where:
 			days | totalAmount || correctApr
 			1    | 1109.1      || 2596016400742373617.4
 			2    | 1109.0      || 15849193566.3
-			3    | 1109.0      || 29286668.1
-			4    | 1109.1      || 1269236.8
+			3    | 1109.0      || 29286668.6
+			4    | 1109.1      || 1269236.7
 			5    | 1109.1      || 191705.7
 			6    | 1109.1      || 54314.9
 			7    | 1109.1      || 22025.9
@@ -98,5 +98,9 @@ class BasicCalculationsSpec extends Specification {
 			28   | 1149.1      || 512.1
 			29   | 1157.0      || 526.8
 			30   | 1157.0      || 489.6
+	}
+
+	private BigDecimal rounded(BigDecimal calculatedApr) {
+		calculatedApr.setScale(1, RoundingMode.HALF_UP)
 	}
 }
