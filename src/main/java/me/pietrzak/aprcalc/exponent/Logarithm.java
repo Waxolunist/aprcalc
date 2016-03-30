@@ -1,14 +1,19 @@
 package me.pietrzak.aprcalc.exponent;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-import static java.math.BigDecimal.*;
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ROUND_HALF_UP;
+import static java.math.BigDecimal.ZERO;
+import static java.math.BigDecimal.valueOf;
 import static me.pietrzak.aprcalc.Configuration.internalComputationScale;
 import static me.pietrzak.aprcalc.Configuration.terms;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Logarithm {
     private static BigDecimal expTen = Exponential.apply(BigDecimal.TEN);
+    private static BigDecimal e = valueOf(Math.E);
+    private static BigDecimal two = valueOf(2);
 
     public static BigDecimal apply(BigDecimal x) {
         if (x.compareTo(ZERO) <= 0) {
@@ -35,21 +40,25 @@ public class Logarithm {
     }
 
     private static boolean largerThanE(BigDecimal y) {
-        return y.compareTo(valueOf(Math.E)) > 0;
+        return y.compareTo(e) > 0;
     }
 
     private static BigDecimal seriesApproximation(BigDecimal x) {
-        return valueOf(2).multiply(seriesSum(x));
+        return two.multiply(seriesSum(x));
     }
 
     private static BigDecimal seriesSum(BigDecimal x) {
         BigDecimal sum = ZERO;
         BigDecimal term = x.subtract(ONE).divide(x.add(ONE), internalComputationScale(), RoundingMode.HALF_UP);
+        BigDecimal th = term;
+        BigDecimal sh = th.multiply(th);
         for (int n = 0; n < terms(); n++) {
+            
             sum = sum
                     .add(
-                            term.pow(2 * n + 1).divide(valueOf(2 * n + 1), internalComputationScale(), ROUND_HALF_UP)
+                            th.divide(valueOf(2 * n + 1), internalComputationScale(), ROUND_HALF_UP)
                     );
+            th = th.multiply(sh);
         }
 
         return sum;

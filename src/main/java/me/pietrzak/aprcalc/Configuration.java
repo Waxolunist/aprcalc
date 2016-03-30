@@ -1,10 +1,11 @@
 package me.pietrzak.aprcalc;
 
-import me.pietrzak.aprcalc.exponent.Power;
-
 import java.math.BigDecimal;
 
 public class Configuration {
+    private static int epsilonExp = 21;
+    private static BigDecimal epsilon = BigDecimal.ONE.divide(BigDecimal.TEN.pow(epsilonExp));
+    
     public static int internalComputationScale() {
         return 40;
     }
@@ -18,11 +19,11 @@ public class Configuration {
     }
 
     public static BigDecimal epsilon() {
-        return Power.apply(BigDecimal.valueOf(2), BigDecimal.valueOf(epsilonExp()).negate());
+        return epsilon;
     }
 
     private static int epsilonExp() {
-        return 20;
+        return epsilonExp;
     }
 
     public static BigDecimal maximumRange() {
