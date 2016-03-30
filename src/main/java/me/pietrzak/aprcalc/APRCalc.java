@@ -27,7 +27,8 @@ public class APRCalc {
         return NewtonsMethod.findZero(
                 x -> cashFlowSum(cashFlow, x),
                 x -> cashFlowSumDerivative(cashFlow, x)
-        ).orElseGet(() -> BisectionMethod.findZero(x -> cashFlowSum(cashFlow, x)).get())
+        ).orElseGet(() -> BisectionMethod.findZero(x -> cashFlowSum(cashFlow, x)
+        ).orElseThrow(UnsupportedOperationException::new))
                 .multiply(BigDecimal.valueOf(100));
     }
 
