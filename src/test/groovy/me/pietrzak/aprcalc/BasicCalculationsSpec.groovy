@@ -57,7 +57,6 @@ class BasicCalculationsSpec extends Specification {
 			result.setScale(1, RoundingMode.HALF_UP) == 13781.7
 	}
 
-	@Unroll
 	def "should calculate apr for cashFlow #days day"() {
 		given:
 			LocalDate startDate = LocalDate.of(2015, 3, 8)
