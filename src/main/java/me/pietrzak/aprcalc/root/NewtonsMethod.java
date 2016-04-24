@@ -15,7 +15,8 @@ public class NewtonsMethod {
         BigDecimal x = BigDecimal.ZERO;
         int iterationsCounter = 0;
         do {
-            if (derivative.apply(x).equals(BigDecimal.ZERO)) {
+            BigDecimal derivativeAtX = derivative.apply(x);
+            if (derivativeAtX.compareTo(BigDecimal.ZERO) == 0) {
                 return Optional.empty();
             }
             if (x.compareTo(BigDecimal.ZERO)<0) {
@@ -27,7 +28,7 @@ public class NewtonsMethod {
             if (x.compareTo(maximumRange)>0) {
                 return Optional.empty();
             }
-            x = x.subtract(function.apply(x).divide(derivative.apply(x), internalComputationsScale, BigDecimal.ROUND_HALF_UP));
+            x = x.subtract(function.apply(x).divide(derivativeAtX, internalComputationsScale, BigDecimal.ROUND_HALF_UP));
         } while (errorIsLargerThanExpected(function, x, epsilon));
         return Optional.of(x);
     }
