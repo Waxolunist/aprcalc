@@ -3,8 +3,8 @@
 # APRcalc 
 Annual percentage rate calculator
 
-Java library to solve numerical equation for APR. This project is going to fulfill problem stad in the EU regulations: directives 2008/48/EC and 2011/90/EU, fully in force in all member states since 2013.
+Java library to solve numerical equation for APR.
 
-Tests are based on various companies public data published on web sites.
+Tests are based on various companies public data published on their web sites.
 
 The mathematical formula for APR is definied here: https://en.wikipedia.org/wiki/Annual_percentage_rate
